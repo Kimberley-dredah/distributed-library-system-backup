@@ -1,101 +1,140 @@
 
-from flask import Flask, render_template, jsonify, request
-from threading import Lock
+from flask import Flask, jsonify, request, render_template
+from database import connect_db, initialize_database
 
 app = Flask(__name__)
 
-# Temporary sample data for Day 1.
-# We will replace this with SQLite later.
-books = [
-    {
-        "id": 1,
-        "title": "Introduction to Networking",
-        "author": "James Kurose",
-        "total_copies": 3,
-        "available_copies": 3
-    },
-    {
-        "id": 2,
-        "title": "Distributed Systems",
-        "author": "Andrew Tanenbaum",
-        "total_copies": 1,
-        "available_copies": 1
-    },
-    {
-        "id": 3,
-        "title": "Python Programming",
-        "author": "John Zelle",
-        "total_copies": 2,
-        "available_copies": 2
-    }
-]
+# Shared secret: PC A must use exactly the same value.
+REPLICATION_TOKEN = "library-replication-2026-change-this"
 
-# Protects book updates from simultaneous requests
-book_lock = Lock()
+# Prepare PC B's own database.
+initialize_database()
 
 
-# Route 1: Display the website
 @app.route("/")
 def home():
     return render_template("index.html")
 
 
-# Route 2: Check whether the server is running
 @app.route("/api/health")
 def health():
     return jsonify({
         "status": "online",
-        "server": "PC A - Primary"
+        "server": "PC B - Backup"
     })
 
 
-# Route 3: Retrieve all books
 @app.route("/api/books")
 def get_books():
-    with book_lock:
-        return jsonify(books)
+    connection = connect_db()
+
+    try:
+        books = connection.execute("""
+            SELECT id, title, author, total_copies, available_copies
+            FROM books
+            ORDER BY id
+        """).fetchall()
+
+        return jsonify([dict(book) for book in books])
+    finally:
+        connection.close()
 
 
-# Route 4: Borrow a book
-@app.route("/api/borrow", methods=["POST"])
-def borrow_book():
-    data = request.get_json(silent=True) or {}
-    book_id = data.get("book_id")
+# PC A sends the complete book catalogue to this endpoint.
+@app.route("/internal/replicate", methods=["POST"])
+def receive_replication():
+    token = request.headers.get("X-Replication-Token")
 
-    if book_id is None:
+    if token != REPLICATION_TOKEN:
         return jsonify({
             "success": False,
-            "message": "Book ID is required."
+            "message": "Unauthorized"
+        }), 401
+
+    data = request.get_json(silent=True) or {}
+    books = data.get("books")
+
+    if not isinstance(books, list):
+        return jsonify({
+            "success": False,
+            "message": "A books list is required."
         }), 400
 
-    with book_lock:
+    connection = connect_db()
+
+    try:
+        connection.execute("BEGIN IMMEDIATE")
+        connection.execute("DELETE FROM books")
+
         for book in books:
-            if book["id"] == book_id:
+            book_id = book.get("id")
+            title = book.get("title")
+            author = book.get("author")
+            total = book.get("total_copies")
+            available = book.get("available_copies")
+            external_id = book.get("external_id")
 
-                if book["available_copies"] > 0:
-                    book["available_copies"] -= 1
+            if (
+                not isinstance(book_id, int)
+                or not isinstance(title, str)
+                or not isinstance(author, str)
+                or not isinstance(total, int)
+                or not isinstance(available, int)
+                or total < 0
+                or available < 0
+                or available > total
+            ):
+                raise ValueError("Invalid book record.")
 
-                    return jsonify({
-                        "success": True,
-                        "message": f"You borrowed {book['title']} successfully."
-                    })
+            connection.execute("""
+                INSERT INTO books (
+                    id, external_id, title, author, available,
+                    total_copies, available_copies
+                )
+                VALUES (?, ?, ?, ?, ?, ?, ?)
+            """, (
+                book_id,
+                external_id,
+                title,
+                author,
+                1 if available > 0 else 0,
+                total,
+                available
+            ))
 
-                return jsonify({
-                    "success": False,
-                    "message": "Sorry, this book is currently unavailable."
-                }), 409
+        connection.commit()
 
+        return jsonify({
+            "success": True,
+            "message": "Backup catalogue updated.",
+            "books_received": len(books)
+        })
+
+    except Exception as error:
+        connection.rollback()
+
+        return jsonify({
+            "success": False,
+            "message": str(error)
+        }), 400
+
+    finally:
+        connection.close()
+
+
+# PC B is read-only until we deliberately promote it.
+@app.route("/api/borrow", methods=["POST"])
+def backup_borrow():
     return jsonify({
         "success": False,
-        "message": "Book not found."
-    }), 404
+        "message": "This is the backup server. Borrowing is disabled."
+    }), 503
 
 
-# Start the server
 if __name__ == "__main__":
     app.run(
         host="0.0.0.0",
-        port=5000,
+        port=5001,
         debug=False,
         threaded=True
     )
