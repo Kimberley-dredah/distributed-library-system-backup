@@ -1,0 +1,124 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Community Library</title>
+
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+
+    <header>
+        <div class="brand">
+            <span class="brand-icon">📚</span>
+            <div>
+                <h2>Community Library</h2>
+                <small>Distributed Book Lending System</small>
+            </div>
+        </div>
+
+        <div class="server-status">
+            <span class="status-dot"></span>
+            <span id="serverStatus">Checking server...</span>
+        </div>
+    </header>
+
+    <main>
+
+        <section class="hero">
+            <p class="eyebrow">WELCOME TO YOUR COMMUNITY LIBRARY</p>
+
+            <h1>Discover your next<br>great read.</h1>
+
+            <p>
+                Search our collection and borrow books
+                from your community library.
+            </p>
+
+            <input
+                type="text"
+                id="searchInput"
+                placeholder="Search books in our library..."
+            >
+        </section>
+
+        <!-- NEW: Search external book catalogue -->
+        <section class="collection">
+
+            <div class="section-heading">
+                <div>
+                    <p class="eyebrow">EXPLORE MORE BOOKS</p>
+                    <h2>Find new books</h2>
+                </div>
+            </div>
+
+            <div class="api-search">
+                <input
+                    type="text"
+                    id="apiSearchInput"
+                    placeholder="Search by title or author..."
+                >
+
+                <button
+                    id="apiSearchButton"
+                    onclick="searchExternalBooks()"
+                >
+                    Search Books
+                </button>
+            </div>
+
+            <div id="apiSearchResults" class="book-grid"></div>
+
+        </section>
+
+        <section class="statistics">
+
+            <div class="stat-card">
+                <span>Total books</span>
+                <h2 id="totalBooks">0</h2>
+            </div>
+
+            <div class="stat-card">
+                <span>Available copies</span>
+                <h2 id="availableBooks">0</h2>
+            </div>
+
+        </section>
+
+        <section class="collection">
+
+            <div class="section-heading">
+                <div>
+                    <p class="eyebrow">OUR COLLECTION</p>
+                    <h2>Available books</h2>
+                </div>
+
+                <button onclick="loadBooks()" class="refresh-btn">
+                    Refresh
+                </button>
+            </div>
+
+            <div id="bookList" class="book-grid">
+                Loading books...
+            </div>
+
+        </section>
+
+        <div id="message" class="message"></div>
+
+    </main>
+
+    <footer>
+        Distributed Library Book Lending System
+        <br>
+        <small>Student Prototype</small>
+    </footer>
+
+    <script src="/static/app.js"></script>
+
+</body>
+</html>
