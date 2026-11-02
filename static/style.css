@@ -3,13 +3,16 @@
     box-sizing: border-box;
     margin: 0;
     padding: 0;
+    scroll-behavior: smooth;
 }
 
 body {
     font-family: Arial, sans-serif;
-    background: #f4f7fb;
+    background: #f3f6fa;
     color: #172033;
 }
+
+/* HEADER */
 
 header {
     background: #102c46;
@@ -28,11 +31,11 @@ header {
 }
 
 .brand-icon {
-    font-size: 32px;
+    font-size: 34px;
 }
 
 .brand h2 {
-    font-size: 19px;
+    font-size: 20px;
 }
 
 .brand small {
@@ -47,24 +50,63 @@ header {
 }
 
 .status-dot {
-    width: 9px;
-    height: 9px;
+    width: 10px;
+    height: 10px;
     background: #22c55e;
     border-radius: 50%;
 }
 
+/* NAVIGATION */
+
+.main-navigation {
+    background: white;
+    padding: 0 7%;
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    min-height: 58px;
+    border-bottom: 1px solid #e2e8f0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.main-navigation a {
+    color: #475569;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 20px 0;
+    border-bottom: 3px solid transparent;
+}
+
+.main-navigation a:hover {
+    color: #0d9488;
+    border-bottom-color: #0d9488;
+}
+
+/* MAIN CONTENT */
+
 main {
-    max-width: 1050px;
+    max-width: 1150px;
     margin: auto;
     padding: 35px 20px;
 }
 
+.collection {
+    margin-bottom: 45px;
+    scroll-margin-top: 85px;
+}
+
+/* HERO */
+
 .hero {
-    background: #173e5d;
+    background: linear-gradient(120deg, #102c46, #17605d);
     color: white;
-    padding: 45px 30px;
-    border-radius: 12px;
-    margin-bottom: 25px;
+    padding: 55px 40px;
+    border-radius: 14px;
+    margin-bottom: 30px;
+    scroll-margin-top: 85px;
 }
 
 .eyebrow {
@@ -80,37 +122,42 @@ main {
 }
 
 .hero h1 {
-    font-size: clamp(30px, 6vw, 48px);
-    margin-bottom: 15px;
+    font-size: clamp(32px, 6vw, 50px);
+    margin-bottom: 16px;
+    line-height: 1.15;
 }
 
 .hero p {
-    line-height: 1.6;
+    line-height: 1.7;
     color: #dbeafe;
 }
 
 #searchInput {
     width: 100%;
-    max-width: 550px;
+    max-width: 570px;
     margin-top: 25px;
-    padding: 15px;
+    padding: 16px;
     border: none;
-    border-radius: 7px;
+    border-radius: 8px;
     font-size: 15px;
+    outline: none;
 }
+
+/* STATISTICS */
 
 .statistics {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 15px;
-    margin-bottom: 35px;
+    gap: 18px;
+    margin-bottom: 40px;
 }
 
 .stat-card {
     background: white;
-    padding: 20px;
-    border-radius: 9px;
+    padding: 24px;
+    border-radius: 12px;
     border: 1px solid #e2e8f0;
+    box-shadow: 0 3px 12px rgba(15, 23, 42, 0.03);
 }
 
 .stat-card span {
@@ -119,64 +166,91 @@ main {
 }
 
 .stat-card h2 {
-    margin-top: 10px;
-    font-size: 30px;
+    margin-top: 12px;
+    font-size: 32px;
     color: #0d9488;
 }
+
+.stat-card p {
+    color: #64748b;
+    font-size: 13px;
+    margin-top: 8px;
+}
+
+/* SECTION HEADINGS */
 
 .section-heading {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 22px;
+    gap: 15px;
 }
 
 .section-heading h2 {
-    font-size: 24px;
+    font-size: 25px;
+    color: #172033;
 }
 
 .refresh-btn {
-    padding: 10px 17px;
+    padding: 11px 18px;
     background: #102c46;
     color: white;
     border: none;
-    border-radius: 6px;
+    border-radius: 7px;
     cursor: pointer;
 }
+
+.refresh-btn:hover {
+    background: #1d496c;
+}
+
+/* BOOK CATALOGUE */
 
 .book-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 18px;
+    gap: 20px;
 }
 
 .book-card {
     background: white;
-    padding: 22px;
-    border-radius: 9px;
+    padding: 23px;
+    border-radius: 12px;
     border: 1px solid #e2e8f0;
+    box-shadow: 0 3px 12px rgba(15, 23, 42, 0.04);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.book-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
 }
 
 .book-icon {
-    font-size: 35px;
-    margin-bottom: 15px;
+    font-size: 36px;
+    margin-bottom: 16px;
 }
 
 .book-card h3 {
-    margin-bottom: 8px;
+    margin-bottom: 9px;
     font-size: 17px;
+    color: #172033;
 }
 
 .book-card .author {
     color: #64748b;
     font-size: 13px;
-    margin-bottom: 15px;
+    margin-bottom: 16px;
 }
 
 .copies {
     font-size: 13px;
-    margin-bottom: 15px;
+    margin-bottom: 16px;
+    color: #475569;
 }
+
+/* BUTTONS */
 
 .borrow-btn {
     width: 100%;
@@ -184,9 +258,14 @@ main {
     background: #0d9488;
     color: white;
     border: none;
-    border-radius: 6px;
+    border-radius: 7px;
     cursor: pointer;
     font-size: 14px;
+    font-weight: bold;
+}
+
+.borrow-btn:hover {
+    background: #0f766e;
 }
 
 .borrow-btn:disabled {
@@ -194,73 +273,26 @@ main {
     cursor: not-allowed;
 }
 
-.message {
-    margin-top: 20px;
-    padding: 14px;
-    border-radius: 7px;
-    display: none;
-}
-
-.message.success {
-    display: block;
-    background: #dcfce7;
-    color: #166534;
-}
-
-.message.error {
-    display: block;
-    background: #fee2e2;
-    color: #991b1b;
-}
-
-footer {
-    text-align: center;
-    padding: 25px;
-    color: #64748b;
-    font-size: 13px;
-}
-
-@media (max-width: 550px) {
-    header {
-        padding: 15px;
-        align-items: flex-start;
-        flex-direction: column;
-    }
-
-    main {
-        padding: 20px 14px;
-    }
-
-    .hero {
-        padding: 30px 20px;
-    }
-
-    .section-heading h2 {
-        font-size: 20px;
-    }
-}
-
-
-/* External book search */
+/* EXTERNAL BOOK SEARCH */
 
 .api-search {
     display: flex;
-    gap: 10px;
+    gap: 12px;
     margin: 20px 0;
 }
 
 .api-search input {
     flex: 1;
     min-width: 0;
-    padding: 13px;
-    border: 1px solid #ddd;
+    padding: 14px;
+    border: 1px solid #cbd5e1;
     border-radius: 8px;
     font-size: 15px;
 }
 
 .api-search button,
 .add-book-btn {
-    padding: 12px 18px;
+    padding: 13px 20px;
     border: none;
     border-radius: 8px;
     background: #244f46;
@@ -277,15 +309,16 @@ footer {
 .external-book {
     background: white;
     border-radius: 12px;
-    padding: 16px;
-    box-shadow: 0 3px 12px rgba(0,0,0,0.06);
+    padding: 18px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.04);
 }
 
 .external-book img {
     width: 85px;
     height: 120px;
     object-fit: contain;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
 }
 
 .external-book h3 {
@@ -301,12 +334,100 @@ footer {
     margin-top: 10px;
 }
 
-@media (max-width: 480px) {
+/* SYSTEM STATUS */
+
+#system-status {
+    scroll-margin-top: 85px;
+}
+
+#system-status .stat-card {
+    border-left: 4px solid #0d9488;
+}
+
+/* MESSAGES */
+
+.message {
+    margin-top: 20px;
+    padding: 14px;
+    border-radius: 8px;
+    display: none;
+}
+
+.message.success {
+    display: block;
+    background: #dcfce7;
+    color: #166534;
+}
+
+.message.error {
+    display: block;
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+/* FOOTER */
+
+footer {
+    text-align: center;
+    padding: 30px;
+    background: #102c46;
+    color: #cbd5e1;
+    font-size: 13px;
+}
+
+footer small {
+    display: inline-block;
+    margin-top: 6px;
+}
+
+/* RESPONSIVE DESIGN */
+
+@media (max-width: 650px) {
+
+    header {
+        padding: 16px;
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .main-navigation {
+        padding: 0 15px;
+        gap: 20px;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+
+    .main-navigation a {
+        font-size: 13px;
+    }
+
+    main {
+        padding: 22px 14px;
+    }
+
+    .hero {
+        padding: 35px 22px;
+    }
+
+    .section-heading h2 {
+        font-size: 21px;
+    }
+
+    .statistics {
+        grid-template-columns: 1fr 1fr;
+    }
+
     .api-search {
         flex-direction: column;
     }
 
     .api-search button {
         width: 100%;
+    }
+}
+
+@media (max-width: 380px) {
+    .statistics {
+        grid-template-columns: 1fr;
     }
 }

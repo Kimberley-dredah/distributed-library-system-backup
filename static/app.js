@@ -5,6 +5,19 @@ const messageBox = document.getElementById("message");
 
 let allBooks = [];
 
+// Remember books borrowed through this browser
+let borrowedBookIds = new Set(
+    JSON.parse(localStorage.getItem("borrowedBookIds") || "[]")
+        .map(String)
+);
+
+function saveBorrowedBooks() {
+    localStorage.setItem(
+        "borrowedBookIds",
+        JSON.stringify([...borrowedBookIds])
+    );
+}
+
 // Check whether the Python server is running
 async function checkServer() {
     try {
@@ -24,7 +37,7 @@ async function checkServer() {
 // Load books from SQLite
 async function loadBooks() {
     try {
-        const response = await fetch("/api/books");
+        const response = await fetch("/api/books?format=json");
 
         if (!response.ok) {
             throw new Error("Could not retrieve books.");
@@ -41,7 +54,7 @@ async function loadBooks() {
 }
 
 
-// Display books in the local library
+
 function displayBooks(books) {
     bookList.innerHTML = "";
 
@@ -72,14 +85,26 @@ function displayBooks(books) {
 
         const button = document.createElement("button");
         button.className = "borrow-btn";
-        button.textContent =
-            book.available_copies > 0 ? "Borrow Book" : "Unavailable";
 
-        button.disabled = book.available_copies === 0;
+        const alreadyBorrowed =
+            borrowedBookIds.has(String(book.id));
 
-        button.addEventListener("click", () => {
-            borrowBook(book.id);
-        });
+        if (alreadyBorrowed) {
+            button.textContent = "Return Book";
+            button.addEventListener("click", () => {
+                returnBook(book.id);
+            });
+
+        } else if (book.available_copies > 0) {
+            button.textContent = "Borrow Book";
+            button.addEventListener("click", () => {
+                borrowBook(book.id);
+            });
+
+        } else {
+            button.textContent = "Unavailable";
+            button.disabled = true;
+        }
 
         card.append(icon, title, author, copies, button);
         bookList.appendChild(card);
@@ -102,6 +127,7 @@ function updateStatistics() {
 }
 
 
+
 // Borrow a book
 async function borrowBook(bookId) {
     try {
@@ -116,6 +142,44 @@ async function borrowBook(bookId) {
         });
 
         const result = await response.json();
+
+        if (result.success) {
+            borrowedBookIds.add(String(bookId));
+            saveBorrowedBooks();
+        }
+
+        showMessage(
+            result.message,
+            result.success ? "success" : "error"
+        );
+
+        await loadBooks();
+
+    } catch (error) {
+        showMessage("Could not contact the server.", "error");
+    }
+}
+
+
+// Return a borrowed book
+async function returnBook(bookId) {
+    try {
+        const response = await fetch("/api/return", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                book_id: bookId
+            })
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            borrowedBookIds.delete(String(bookId));
+            saveBorrowedBooks();
+        }
 
         showMessage(
             result.message,

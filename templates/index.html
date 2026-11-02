@@ -27,9 +27,17 @@
         </div>
     </header>
 
+    <nav class="main-navigation">
+        <a href="#dashboard">Dashboard</a>
+        <a href="#catalogue">Book Catalogue</a>
+        <a href="#external-search">Discover Books</a>
+        <a href="#system-status">Server Status</a>
+    </nav>
+
     <main>
 
-        <section class="hero">
+        <!-- DASHBOARD -->
+        <section class="hero" id="dashboard">
             <p class="eyebrow">WELCOME TO YOUR COMMUNITY LIBRARY</p>
 
             <h1>Discover your next<br>great read.</h1>
@@ -43,16 +51,50 @@
                 type="text"
                 id="searchInput"
                 placeholder="Search books in our library..."
+                aria-label="Search library catalogue"
             >
         </section>
 
-        <!-- NEW: Search external book catalogue -->
-        <section class="collection">
+        <!-- STATISTICS -->
+        <section class="statistics">
+            <div class="stat-card">
+                <span>Total books</span>
+                <h2 id="totalBooks">0</h2>
+            </div>
+
+            <div class="stat-card">
+                <span>Available copies</span>
+                <h2 id="availableBooks">0</h2>
+            </div>
+        </section>
+
+        <!-- BOOK CATALOGUE -->
+        <section class="collection" id="catalogue">
+
+            <div class="section-heading">
+                <div>
+                    <p class="eyebrow">YOUR LIBRARY</p>
+                    <h2>Book Catalogue</h2>
+                </div>
+
+                <button onclick="loadBooks()" class="refresh-btn">
+                    Refresh Catalogue
+                </button>
+            </div>
+
+            <div id="bookList" class="book-grid">
+                Loading books...
+            </div>
+
+        </section>
+
+        <!-- EXTERNAL BOOK SEARCH -->
+        <section class="collection" id="external-search">
 
             <div class="section-heading">
                 <div>
                     <p class="eyebrow">EXPLORE MORE BOOKS</p>
-                    <h2>Find new books</h2>
+                    <h2>Discover New Books</h2>
                 </div>
             </div>
 
@@ -61,6 +103,7 @@
                     type="text"
                     id="apiSearchInput"
                     placeholder="Search by title or author..."
+                    aria-label="Search external book catalogue"
                 >
 
                 <button
@@ -75,35 +118,24 @@
 
         </section>
 
-        <section class="statistics">
-
-            <div class="stat-card">
-                <span>Total books</span>
-                <h2 id="totalBooks">0</h2>
-            </div>
-
-            <div class="stat-card">
-                <span>Available copies</span>
-                <h2 id="availableBooks">0</h2>
-            </div>
-
-        </section>
-
-        <section class="collection">
+        <!-- SERVER STATUS -->
+        <section class="collection" id="system-status">
 
             <div class="section-heading">
                 <div>
-                    <p class="eyebrow">OUR COLLECTION</p>
-                    <h2>Available books</h2>
+                    <p class="eyebrow">DISTRIBUTED SYSTEM</p>
+                    <h2>Server Connection</h2>
                 </div>
-
-                <button onclick="loadBooks()" class="refresh-btn">
-                    Refresh
-                </button>
             </div>
 
-            <div id="bookList" class="book-grid">
-                Loading books...
+            <div class="stat-card">
+                <span>Current server connection</span>
+                <h2 id="serverStatusDetails">
+                    Server PC B : Servers are Connected
+                </h2>
+                <p>
+                    Connection status is displayed on http://127.0.0.1:5001/api/health.
+                </p>
             </div>
 
         </section>
